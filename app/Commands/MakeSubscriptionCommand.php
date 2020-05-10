@@ -5,6 +5,7 @@ namespace App\Commands;
 use Google\Cloud\PubSub\PubSubClient;
 use App\Concerns\GetProjectIdConcern;
 use Google\Cloud\PubSub\Subscription;
+use App\Contracts\PubSubClientContract;
 use LaravelZero\Framework\Commands\Command;
 
 class MakeSubscriptionCommand extends Command
@@ -31,12 +32,15 @@ class MakeSubscriptionCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param \Google\Cloud\PubSub\PubSubClient $client
+     * @param \App\Contracts\PubSubClientContract $client
      *
      * @return void
      */
-    public function handle(PubSubClient $client)
+    public function handle(PubSubClientContract $client)
     {
+        if ($this->option('project_id') !== null) {
+            $client->setProjectId($this->option('project_id'));
+        }
         $subscription = $this->getSubscriptionName($client);
         $this->info("Successfully added new subscription [${subscription}]");
     }

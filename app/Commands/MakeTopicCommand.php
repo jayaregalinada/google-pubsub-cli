@@ -5,6 +5,7 @@ namespace App\Commands;
 use Google\Cloud\PubSub\Topic;
 use Google\Cloud\PubSub\PubSubClient;
 use App\Concerns\GetProjectIdConcern;
+use App\Contracts\PubSubClientContract;
 use LaravelZero\Framework\Commands\Command;
 
 class MakeTopicCommand extends Command
@@ -30,13 +31,16 @@ class MakeTopicCommand extends Command
     /**
      * Execute the console command.
      *
-     * @param \Google\Cloud\PubSub\PubSubClient $client
+     * @param \App\Contracts\PubSubClientContract $client
      *
      * @return void
      */
-    public function handle(PubSubClient $client)
+    public function handle(PubSubClientContract $client)
     {
-        $topic = $this->getTopic($client, $this->argument('topic'));
+        if ($this->option('project_id') !== null) {
+            $client->setProjectId($this->option('project_id'));
+        }
+        $topic = $this->getTopic($client->getClient(), $this->argument('topic'));
         $this->info("Successfully created new topic [${topic}]");
     }
 
