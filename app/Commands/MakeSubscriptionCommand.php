@@ -41,7 +41,7 @@ class MakeSubscriptionCommand extends Command
         if ($this->option('project_id') !== null) {
             $client->setProjectId($this->option('project_id'));
         }
-        $subscription = $this->getSubscriptionName($client);
+        $subscription = $this->getSubscriptionName($client->getClient());
         $this->info("Successfully added new subscription [${subscription}]");
     }
 
